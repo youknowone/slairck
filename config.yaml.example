@@ -1,0 +1,12 @@
+DEBUG: True
+TEST: False
+    
+name: ozinger
+
+slack:
+    token: xoxb-slack-token
+
+irc:
+    host: irc.ozinger.org
+    port: 6667
+    nick: slairck_test
