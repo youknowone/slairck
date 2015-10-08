@@ -101,8 +101,15 @@ class IrcBot(BotMixin):
                 self.irc_client.send_line(line)
             elif data['type'] == 'message':
                 print 'do?', data
-                line = u'privmsg #{} :{}'.format(name(channel), data['text'])
-                self.irc_client.send_line(line)
+                message = data.get('text', '').replace('\r', ' ').replace('\n', r' ')
+                user_id = data.get('user', None)
+                if user_id:
+                    user = bot.slack_client.server.users.find(user_id)
+                else:
+                    user = None
+                if message:
+                    line = u'privmsg #{} :{}'.format(name(channel), message)
+                    self.irc_client.send_line(line)
             else:
                 line = u'privmsg #{} :{}'.format(self.config['irc'].get('nick', 'slairck'), unicode(data))
                 self.irc_client.send_line(line)
