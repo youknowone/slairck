@@ -10,6 +10,7 @@ import os
 import sys
 import time
 import logging
+import websocket
 from argparse import ArgumentParser
 
 from slackclient import SlackClient
@@ -28,6 +29,7 @@ class SlackBot(BotMixin):
         self.plugin = 'slack'
         self.config = config
         self.relay_outs = []
+        self.error_count = 0
 
         assert self.config
 
@@ -38,11 +40,23 @@ class SlackBot(BotMixin):
         self.slack_client.rtm_connect()
 
     def init(self):
-        self.connect()
         self.load_plugins()
-            
+        self.connect()
+
     def process(self):
-        for reply in self.slack_client.rtm_read():
+        try:
+            replies = self.slack_client.rtm_read()
+            self.error_count = 0
+        except websocket.WebSocketConnectionClosedException:
+            self.connect()
+            return
+        except Exception as e:
+            self.error_count += 1
+            if self.error_count > 5:
+                self.connect()
+                return
+
+        for reply in replies:
             self.input(reply)
         self.crons()
         self.output()
@@ -103,7 +117,11 @@ class SlackBot(BotMixin):
                 channel.send_message(u'YOU joinned to {}{}'.format(prefix, item['channel']))
             elif item['type'] == 'message':
                 level, channel = channel_for(bot, item['channel'])
-                message = u'<{}> {}'.format(item['user'], item['text'])
+                try:
+                    text = u'{}'.format(item['text'])
+                except UnicodeDecodeError as e:
+                    text = u'{}'.format(e)
+                message = u'<{}> {}'.format(item['user'], text)
                 tag = {
                     0: '',
                     1: item['channel'] + ' ',
