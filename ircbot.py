@@ -10,6 +10,7 @@ import sys
 import time
 import logging
 import yaml
+
 from argparse import ArgumentParser
 
 from ircclient.struct import Message
@@ -20,7 +21,7 @@ from util import dbg, load_config
 
 
 def log_send(s):
-    print 'irc<', s,
+    print('irc<', s,)
 
 
 class IrcBot(BotMixin):
@@ -37,7 +38,7 @@ class IrcBot(BotMixin):
 
     def connect(self):
         """Convenience method that creates Server instance"""
-        print 'connect irc', self.addr
+        print('connect irc', self.addr)
         self.irc_client = IrcClient(self.addr, blocking=False)
         self.irc_client.socket.send_callback = log_send
         self.irc_client.connect()
@@ -58,7 +59,7 @@ class IrcBot(BotMixin):
             if not self.irc_client.dispatchable():
                 break
         time.sleep(0.1)
-    
+
     def input(self, data):
         data = Message(data)
         function_name = "process_" + data.type.lower()
@@ -100,8 +101,14 @@ class IrcBot(BotMixin):
                 line = u'join #{}'.format(name(channel))
                 self.irc_client.send_line(line)
             elif data['type'] == 'message':
-                print 'do?', data
-                message = data.get('text', '').replace('\r', ' ').replace('\n', r' ')
+                print('do?', data)
+                message = data.get('text', '')
+                try:
+                    import html
+                    message = html.unescape(message)
+                except ImportError:
+                    pass
+                message = message.replace('\r', ' ').replace('\n', r' ')
                 user_id = data.get('user', None)
                 if user_id:
                     user = bot.slack_client.server.users.find(user_id)

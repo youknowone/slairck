@@ -1,4 +1,4 @@
 
 
 def catch_all(data):
-    print 'irc>', data
+    print('irc>', data)

@@ -35,7 +35,7 @@ class SlackBot(BotMixin):
 
     def connect(self):
         """Convenience method that creates Server instance"""
-        print 'connect slack'
+        print('connect slack')
         self.slack_client = SlackClient(self.token)
         self.slack_client.rtm_connect()
 
@@ -54,7 +54,7 @@ class SlackBot(BotMixin):
             self.error_count += 1
             if self.error_count > 5:
                 self.connect()
-                return
+            return
 
         for reply in replies:
             self.input(reply)
@@ -81,7 +81,7 @@ class SlackBot(BotMixin):
         channel = self.slack_client.server.channels.find(output[0])
         if channel != None and output[1] != None:
             message = output[1].encode('ascii', 'ignore')
-            print 'slack<', channel, message
+            print('slack<', channel, message)
             channel.send_message("{}".format(message))
 
     def relay(self, bot, relay_ins):

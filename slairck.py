@@ -45,7 +45,7 @@ if __name__ == "__main__":
     slackbot = SlackBot(config['slack']['token'], config)
     ircbot = IrcBot(config['irc']['host'], int(config['irc'].get('port', '6667')), config)
 
-    if config.has_key("DAEMON"):
+    if "DAEMON" in config:
         if config["DAEMON"]:
             import daemon
             with daemon.DaemonContext():

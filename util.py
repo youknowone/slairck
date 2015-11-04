@@ -47,5 +47,5 @@ def parse_args():
 
 def load_config(name='config'):
     args = parse_args()
-    return yaml.load(file(args.config or name + '.yaml', 'r'))
+    return yaml.load(open(args.config or name + '.yaml', 'r'))
 
