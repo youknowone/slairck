@@ -3,16 +3,14 @@
 import sys
 sys.dont_write_bytecode = True
 
-import glob
 import yaml
-import json
-import os
 import sys
 import time
 import logging
 from argparse import ArgumentParser
 
 debug = True
+
 
 def dbg(debug_string):
     if debug:
@@ -48,4 +46,3 @@ def parse_args():
 def load_config(name='config'):
     args = parse_args()
     return yaml.load(open(args.config or name + '.yaml', 'r'))
-

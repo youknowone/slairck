@@ -3,18 +3,14 @@
 import sys
 sys.dont_write_bytecode = True
 
-import glob
-import yaml
-import json
-import os
 import sys
 import time
 import logging
-from argparse import ArgumentParser
 
 from util import load_config
 from slackbot import SlackBot
 from ircbot import IrcBot
+
 
 def main_loop(bots, config):
     if "LOGFILE" in config:
@@ -25,7 +21,7 @@ def main_loop(bots, config):
             bot.init()
         while True:
             for bot in bots:
-                #print 'processing', bot
+                # print 'processing', bot
                 bot.process()
                 relay_ins = bot.collect_relay()
                 for xbot in bots:

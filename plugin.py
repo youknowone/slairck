@@ -3,15 +3,9 @@
 import sys
 sys.dont_write_bytecode = True
 
-import glob
-import yaml
-import json
-import os
 import sys
 import time
 import logging
-from argparse import ArgumentParser
-from slackclient import SlackClient
 
 from util import dbg
 

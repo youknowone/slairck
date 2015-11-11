@@ -3,4 +3,4 @@ python-daemon
 pyyaml
 websocket-client
 slackclient
-git+https://github.com/youknowone/ircclient.git
+ircclient

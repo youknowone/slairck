@@ -1,4 +1,3 @@
-import time
 
 config = {}
 
@@ -17,4 +16,3 @@ def process_connected(data):
 
 def process_ping(data):
     outputs.append('pong :{}'.format(data.args[1]))
-

@@ -1,4 +1,4 @@
-import time
+
 crontable = []
 outputs = []
 relay_outs = []
@@ -14,4 +14,3 @@ def process_message(data):
 
 def process_channel_joined(data):
     relay_outs.append({'type': 'join', 'channel': data['channel']['id']})
-

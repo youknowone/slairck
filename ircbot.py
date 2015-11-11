@@ -3,15 +3,8 @@
 import sys
 sys.dont_write_bytecode = True
 
-import glob
-import json
-import os
 import sys
 import time
-import logging
-import yaml
-
-from argparse import ArgumentParser
 
 from ircclient.struct import Message
 from ircclient.client import DispatchClient as IrcClient
@@ -55,7 +48,7 @@ class IrcBot(BotMixin):
                 self.input(message)
             self.crons()
             self.output()
-            #self.autoping()
+            # self.autoping()
             if not self.irc_client.dispatchable():
                 break
         time.sleep(0.1)
@@ -114,6 +107,7 @@ class IrcBot(BotMixin):
                     user = bot.slack_client.server.users.find(user_id)
                 else:
                     user = None
+                user  # usable, but not yet
                 if message:
                     line = u'privmsg #{} :{}'.format(name(channel), message)
                     self.irc_client.send_line(line)
@@ -133,10 +127,8 @@ if __name__ == "__main__":
     files_currently_downloading = []
     job_hash = {}
 
-    if config.has_key("DAEMON"):
-        if config["DAEMON"]:
-            import daemon
-            with daemon.DaemonContext():
-                main_loop(bot, config)
+    if config.get('DAEMON', None):
+        import daemon
+        with daemon.DaemonContext():
+            main_loop(bot, config)
     main_loop(bot, config)
-

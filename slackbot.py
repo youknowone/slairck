@@ -3,18 +3,11 @@
 import sys
 sys.dont_write_bytecode = True
 
-import glob
-import yaml
-import json
-import os
 import sys
 import time
-import logging
 import websocket
-from argparse import ArgumentParser
 
 from slackclient import SlackClient
-from plugin import Plugin, Job
 from bot import BotMixin
 from util import dbg, load_config
 
@@ -50,7 +43,7 @@ class SlackBot(BotMixin):
         except websocket.WebSocketConnectionClosedException:
             self.connect()
             return
-        except Exception as e:
+        except Exception:
             self.error_count += 1
             if self.error_count > 5:
                 self.connect()
@@ -78,6 +71,7 @@ class SlackBot(BotMixin):
             self.last_ping = now
 
     def send_item(self, data):
+        output = data
         channel = self.slack_client.server.channels.find(output[0])
         if channel != None and output[1] != None:
             message = output[1].encode('ascii', 'ignore')
@@ -152,7 +146,7 @@ if __name__ == "__main__":
     files_currently_downloading = []
     job_hash = {}
 
-    if config.has_key("DAEMON"):
+    if 'DAEMON' in config:
         if config["DAEMON"]:
             import daemon
             with daemon.DaemonContext():
