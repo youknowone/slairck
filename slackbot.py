@@ -89,9 +89,9 @@ class SlackBot(BotMixin):
             else:
                 level, channel = 0, self.slack_client.server.channels.find(item['channel'])
             if not channel:
-                level, channel = 2, self.slack_client.server.channels.find(item['slairck'])
+                level, channel = 2, self.slack_client.server.channels.find('slairck')
             if not channel:
-                level, channel = 2, self.slack_client.server.channels.find(item['general'])
+                level, channel = 2, self.slack_client.server.channels.find('general')
             if not channel:
                 level, channel = 2, self.slack_client.server.channels[0]
             return level, channel
