@@ -24,7 +24,13 @@ def catch_all(data):
 
 def process_001(data):
     relay_outs.append({'type': 'connected'})
+    autojoin = data.config['irc'].get('autojoin', [])
+    if isinstance(autojoin, str):
+        autojoin = [autojoin]
+    for channel in autojoin:
+        outputs.append('join :#{}'.format(channel))
 
 
 def process_join(data):
-    relay_outs.append({'type': 'join', 'user': data.nick, 'channel': data.args[1][1:]})
+    pass
+    #relay_outs.append({'type': 'join', 'user': data.nick, 'channel': data.args[1][1:]})

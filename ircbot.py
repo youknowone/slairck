@@ -55,6 +55,7 @@ class IrcBot(BotMixin):
 
     def input(self, data):
         data = Message(data)
+        data.config = self.config
         function_name = "process_" + data.type.lower()
         dbg("got {}".format(function_name))
         for plugin in self.bot_plugins:
@@ -109,7 +110,10 @@ class IrcBot(BotMixin):
                     user = None
                 user  # usable, but not yet
                 if message:
-                    line = u'privmsg #{} :{}'.format(name(channel), message)
+                    if self.config['mode'] == 'relay':
+                        line = u'privmsg #{} :<{}> {}'.format(name(channel), user.name if user else user_id, message)
+                    else:  # mode proxy
+                        line = u'privmsg #{} :{}'.format(name(channel), message)
                     self.irc_client.send_line(line)
             else:
                 line = u'privmsg #{} :{}'.format(self.config['irc'].get('nick', 'slairck'), unicode(data))

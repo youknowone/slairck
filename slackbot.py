@@ -56,6 +56,7 @@ class SlackBot(BotMixin):
         self.autoping()
 
     def input(self, data):
+        data['config'] = self.config
         if "type" in data:
             function_name = "process_" + data["type"]
             dbg("got {}".format(function_name))
@@ -108,7 +109,7 @@ class SlackBot(BotMixin):
                 level, channel = channel_for(bot, item['channel'])
                 if level != 0:
                     self.slack_client.server.join_channel(prefix + item['channel'])
-                channel.send_message(u'YOU joinned to {}{}'.format(prefix, item['channel']))
+                channel.send_message(u'bot joinned to {}{}'.format(prefix, item['channel']))
             elif item['type'] == 'message':
                 level, channel = channel_for(bot, item['channel'])
                 try:
