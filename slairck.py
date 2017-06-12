@@ -31,19 +31,25 @@ def main_loop(bots, config):
 
             time.sleep(.2)
     except KeyboardInterrupt:
-        sys.exit(0)
-    except:
+        raise
+    except Exception as e:
+        logging.exception(e)
         logging.exception('OOPS')
 
 
-if __name__ == "__main__":
-    config = load_config('config')
-    slackbot = SlackBot(config['slack']['token'], config)
-    ircbot = IrcBot(config['irc']['host'], int(config['irc'].get('port', '6667')), config)
+def run():
+    while True:
+        config = load_config('config')
+        slackbot = SlackBot(config['slack']['token'], config)
+        ircbot = IrcBot(config['irc']['host'], int(config['irc'].get('port', '6667')), config)
 
-    if "DAEMON" in config:
-        if config["DAEMON"]:
-            import daemon
-            with daemon.DaemonContext():
-                main_loop((slackbot, ircbot), config)
-    main_loop((slackbot, ircbot), config)
+        if "DAEMON" in config:
+            if config["DAEMON"]:
+                import daemon
+                with daemon.DaemonContext():
+                    main_loop((slackbot, ircbot), config)
+        main_loop((slackbot, ircbot), config)
+
+
+if __name__ == "__main__":
+    run()
