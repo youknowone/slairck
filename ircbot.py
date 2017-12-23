@@ -3,7 +3,7 @@
 import sys
 sys.dont_write_bytecode = True
 
-import sys
+import re
 import time
 
 from ircclient.struct import Message
@@ -15,6 +15,18 @@ from util import dbg, load_config
 
 def log_send(s):
     print('irc<', s,)
+
+
+def convert_message(message):
+    try:
+        import html  # py3
+        message = html.unescape(message)
+    except ImportError:
+        pass
+    message = re.sub(r'<([A-Za-z0-9]+:[^>]+)>', r'\1', message)
+    message = re.sub(r'<#[A-Z0-9]+\|([^>]+)>', r'#\1', message)
+    message = message.replace('\r', ' ').replace('\n', r' ')
+    return message
 
 
 class IrcBot(BotMixin):
@@ -97,12 +109,7 @@ class IrcBot(BotMixin):
             elif data['type'] == 'message':
                 print('do?', data)
                 message = data.get('text', '')
-                try:
-                    import html
-                    message = html.unescape(message)
-                except ImportError:
-                    pass
-                message = message.replace('\r', ' ').replace('\n', r' ')
+                message = convert_message(message)
                 user_id = data.get('user', None)
                 if user_id:
                     user = bot.slack_client.server.users.find(user_id)
@@ -110,7 +117,7 @@ class IrcBot(BotMixin):
                     user = None
                 user  # usable, but not yet
                 if message:
-                    if self.config['mode'] == 'relay':
+                    if self.config.get('mode') == 'relay':
                         line = u'privmsg #{} :<{}> {}'.format(name(channel), user.name if user else user_id, message)
                     else:  # mode proxy
                         line = u'privmsg #{} :{}'.format(name(channel), message)

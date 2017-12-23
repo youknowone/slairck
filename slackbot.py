@@ -116,12 +116,19 @@ class SlackBot(BotMixin):
                     text = u'{}'.format(item['text'])
                 except UnicodeDecodeError as e:
                     text = u'{}'.format(e)
+                message = text
+                username = item['user']
                 message = u'<{}> {}'.format(item['user'], text)
                 tag = {
                     0: '',
                     1: item['channel'] + ' ',
                     2: prefix + item['channel'] + ' ',
                 }[level]
+                #self.slack_client.api_call(
+                #    'chat.postMessage',
+                #    channel=item['channel'],
+                #    text=message,
+                #    username=username)
                 channel.send_message(tag + message)
             elif item.get('debug', False):
                 try:
