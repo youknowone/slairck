@@ -68,7 +68,7 @@ class IrcBot(BotMixin):
     def input(self, data):
         data = Message(data)
         data.config = self.config
-        function_name = "process_" + data.type.lower()
+        function_name = "process_" + str(data.type).lower()
         dbg("got {}".format(function_name))
         for plugin in self.bot_plugins:
             plugin.register_jobs()
