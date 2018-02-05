@@ -2,5 +2,7 @@
 /*.conf
 /*.yaml
 /plugins/**
+.cache
 .env
 .ropeproject
+.python-version
