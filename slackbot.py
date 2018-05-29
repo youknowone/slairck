@@ -83,6 +83,8 @@ class SlackBot(BotMixin):
         prefix = (bot.name + '-') if bot.name else ''
 
         def channel_for(bot, channel):
+            return 0, self.slack_client.server.channels.find('general')
+
             if bot.name:
                 level, channel = 0, self.slack_client.server.channels.find(bot.name + '-' + item['channel'])
                 if not channel:
@@ -99,12 +101,15 @@ class SlackBot(BotMixin):
 
         for item in relay_ins:
             if item['type'] == 'connected':
+                """
                 channels = self.slack_client.server.channels
                 if self.config.get('TEST', False):
                     channels = [channels.find(prefix + 'slairck')]
                 for channel in channels:
                     if channel.name.startswith(prefix):
                         self.relay_outs.append({'type': 'join', 'channel': channel.id})
+                """
+                self.relay_outs.append({'type': 'join', 'channel': 'talk42'})
             elif item['type'] == 'join' and item['user'] == self.config['irc']['nick']:
                 level, channel = channel_for(bot, item['channel'])
                 if level != 0:

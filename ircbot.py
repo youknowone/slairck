@@ -104,7 +104,7 @@ class IrcBot(BotMixin):
                     continue
 
             if data['type'] == 'join':
-                line = u'join #{}'.format(name(channel))
+                line = u'join :#talk42'
                 self.irc_client.send_line(line)
             elif data['type'] == 'message':
                 print('do?', data)
@@ -117,10 +117,7 @@ class IrcBot(BotMixin):
                     user = None
                 user  # usable, but not yet
                 if message:
-                    if self.config.get('mode') == 'relay':
-                        line = u'privmsg #{} :<{}> {}'.format(name(channel), user.name if user else user_id, message)
-                    else:  # mode proxy
-                        line = u'privmsg #{} :{}'.format(name(channel), message)
+                    line = u'privmsg #{} :<{}> {}'.format('talk42', user.name if user else user_id, message)
                     self.irc_client.send_line(line)
             else:
                 line = u'privmsg #{} :{}'.format(self.config['irc'].get('nick', 'slairck'), unicode(data))
