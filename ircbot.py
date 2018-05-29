@@ -93,9 +93,13 @@ class IrcBot(BotMixin):
             if self.name:
                 if not channel.name.startswith(self.name):
                     return None
-                return channel.name.split('-', 1)[1]
+                channel_name = channel.name.split('-', 1)[1]
             else:
-                return channel.name
+                channel_name = channel.name
+            if channel_name == 'general':  # looking for better way
+                defaultchannel = self.config['irc'].get('defaultchannel')
+                channel_name = defaultchannel
+            return channel_name
 
         for data in relay_ins:
             if 'channel' in data:
@@ -103,7 +107,7 @@ class IrcBot(BotMixin):
                 if channel is None:
                     continue
 
-            if data['type'] == 'join':
+            if data['type'] == 'join' and not self.config['irc'].get('autojoin'):
                 line = u'join #{}'.format(name(channel))
                 self.irc_client.send_line(line)
             elif data['type'] == 'message':

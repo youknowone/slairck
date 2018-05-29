@@ -27,6 +27,9 @@ def process_001(data):
     autojoin = data.config['irc'].get('autojoin', [])
     if isinstance(autojoin, str):
         autojoin = [autojoin]
+    defaultchannel = data.config['irc'].get('defaultchannel')
+    if defaultchannel:
+        autojoin.insert(0, defaultchannel)
     for channel in autojoin:
         outputs.append('join :#{}'.format(channel))
 
