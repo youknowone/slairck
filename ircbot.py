@@ -18,11 +18,12 @@ def log_send(s):
 
 
 def convert_message(message):
-    try:
-        import html  # py3
-        message = html.unescape(message)
-    except ImportError:
-        pass
+    if sys.version_info.major >= 3:
+        import html
+    else:
+        from six.moves.html_parser import HTMLParser
+        html = HTMLParser()
+    message = html.unescape(message)
     message = re.sub(r'<([A-Za-z0-9]+:[^>]+)>', r'\1', message)
     message = re.sub(r'<#[A-Z0-9]+\|([^>]+)>', r'#\1', message)
     message = message.replace('\r', ' ').replace('\n', r' ')

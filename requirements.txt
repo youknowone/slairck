@@ -4,3 +4,4 @@ PyYAML==3.12
 websocket-client==0.40.0
 slackclient==1.0.5
 ircclient==0.2.1
+six==1.10.0
